@@ -1,10 +1,10 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
+#pragma once
 //////////////////////////////////////////////////////////////////////////////
 // breezeconfigurationui.h
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// Copyright (c) 2009 Paulo Otávio de Lima (aka Aragubas) <dpaulootavio5@outlook.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -89,5 +89,3 @@ namespace Breeze
     };
 
 }
-
-#endif

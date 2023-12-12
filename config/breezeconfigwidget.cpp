@@ -36,7 +36,6 @@
 namespace Breeze
 {
 
-    //_________________________________________________________
     ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
         KCModule(parent, args),
         m_configuration( KSharedConfig::openConfig( QStringLiteral( "sierrabreezeenhancedrc" ) ) ),
@@ -84,7 +83,6 @@ namespace Breeze
 
     }
 
-    //_________________________________________________________
     void ConfigWidget::load()
     {
 
@@ -103,8 +101,6 @@ namespace Breeze
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.opaqueTitleBar->setChecked( m_internalSettings->opaqueTitleBar() );
-        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
-        m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
         m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.hideTitleBar->setCurrentIndex( m_internalSettings->hideTitleBar() );
@@ -132,7 +128,6 @@ namespace Breeze
 
     }
 
-    //_________________________________________________________
     void ConfigWidget::save()
     {
 
@@ -151,8 +146,6 @@ namespace Breeze
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setOpaqueTitleBar( m_ui.opaqueTitleBar->isChecked() );
-        m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
-        m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
         m_internalSettings->setBackgroundOpacity(m_ui.opacitySpinBox->value());
         m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
         m_internalSettings->setHideTitleBar( m_ui.hideTitleBar->currentIndex() );
@@ -194,7 +187,6 @@ namespace Breeze
 
     }
 
-    //_________________________________________________________
     void ConfigWidget::defaults()
     {
 
@@ -218,8 +210,6 @@ namespace Breeze
         m_ui.matchColorForTitleBar->setChecked( m_internalSettings->matchColorForTitleBar() );
         m_ui.systemForegroundColor->setChecked( m_internalSettings->systemForegroundColor() );
 
-        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
-        m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
         m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
 
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
@@ -234,7 +224,6 @@ namespace Breeze
 
     }
 
-    //_______________________________________________
     void ConfigWidget::updateChanged()
     {
 
@@ -260,10 +249,6 @@ namespace Breeze
         else if ( m_ui.matchColorForTitleBar->isChecked() != m_internalSettings->matchColorForTitleBar() ) modified = true;
         else if ( m_ui.systemForegroundColor->isChecked() != m_internalSettings->systemForegroundColor() ) modified = true;
 
-        // animations
-        else if( m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled() ) modified = true;
-        else if( m_ui.animationsDuration->value() != m_internalSettings->animationsDuration() ) modified = true;
-
         // shadows
         else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
@@ -283,7 +268,6 @@ namespace Breeze
 
     }
 
-    //_______________________________________________
     void ConfigWidget::setChanged( bool value )
     {
         emit changed( value );

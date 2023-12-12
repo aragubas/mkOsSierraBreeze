@@ -1,65 +1,22 @@
-# Sierra Breeze Enhanced
+# mkOS Sierra Breeze
 
-**Discontinued** (no free time available). **Let me know if you'd like to help keeping SBE up**
+A fork of [Sierra Breeze Enhanced](https://github.com/kupiqu/SierraBreezeEnhanced) with some changes and simplified
 
 ## Overview
 
-Sierra Breeze Enhanced started as a fork of Breeze Enhanced decoration. It has the following main features:
+Features:
 
- * Button style options: Plasma / Gnome / macOS Sierra / macOS Dark Aurorae / SBE Sierra themes / SBE Dark Aurorae themes / Color Symbols themes / Monochrome Symbols themes (Note: the application menu button is considered special and does not change).
  * Button spacing and padding Options.
- * Button hovering animation.
  * Option to make all button symbols to appear at unison on hovering (Note: it does not apply to symbol themes).
  * Titlebar style options: SBE own style of Line Separation between Titlebar and Window / Match Titlebar color to Window color / Hide Titlebar under certain circumstances (Never/Maximization/Any Maximization (including H/V)/Always) / Gradient Adjustments / Opacity Adjustments.
  * Specific Shadow settings for inactive windows
- 
- 
-### Screenshot of SBE Sierra theme (or How it All started...)
-
-
-![Active Buttons](screenshots/ActiveButtons.gif?raw=true "Active Buttons")
-![Inactive Buttons](screenshots/InactiveButtons.gif?raw=true "Inactive Buttons")
-
-
-### Screenshot of Settings
-
-
-![SBE Settings](screenshots/SBE_settings.png?raw=true "SBE Settings")
 
 
 ## Installation
 
-Please note that after installing, you need to restart KWin by executing either `kwin_x11 --replace` or `kwin_wayland --replace` in krunner (depending on whether your session runs upon X11 or Wayland). Alternatively, restarting the KDE session is obviously also an option. Then, Sierra Breeze Enhanced will appear in *System Settings &rarr; Application Style &rarr; Window Decorations*.
+Please note that after installing, you need to restart KWin by executing either `kwin_x11 --replace` or `kwin_wayland --replace` in krunner (depending on whether your session runs upon X11 or Wayland). Alternatively, restarting the KDE session is obviously also an option. Then, mkOS Sierra Breeze will appear in *System Settings &rarr; Application Style &rarr; Window Decorations*.
 
-### Method 1: Install prebuilt packages
-- Ubuntu:
-```sh
-sudo add-apt-repository ppa:krisives/sierrabreezeenhanced
-sudo apt update
-sudo apt install sierrabreezeenhanced
-```
-- openSUSE:
-```sh
-sudo zypper ar obs://home:trmdi trmdi
-sudo zypper in SierraBreezeEnhanced
-```
-- Arch Linux:
-```
-git clone https://aur.archlinux.org/kwin-decoration-sierra-breeze-enhanced-git.git
-cd kwin-decoration-sierra-breeze-enhanced-git
-makepkg -si
-cd ..
-rm -rf kwin-decoration-sierra-breeze-enhanced-git
-```
-
-- Alpine Linux:
-``` shell
-sudo echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-sudo apk update
-sudo apk add sierrabreezeenhanced
-```
-
-### Method 2: Compile from source code
+### Method 1: Compile from source code
 *Compilation should not be done against versions of KWin < 5.14.*
 
 #### Step 1: Build dependencies
@@ -69,6 +26,7 @@ sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11
 ```
 - Arch Linux
 ``` shell
+sudo pacman -S base-devel # Required development tools
 sudo pacman -S kdecoration qt5-declarative qt5-x11extras    # Decoration
 sudo pacman -S cmake extra-cmake-modules                    # Installation
 ```
@@ -115,4 +73,4 @@ sudo make uninstall
 
 
 ## Credits
-Breeze, Sierra Breeze and Breeze Enhanced for obvious reasons :)
+Sierra Breeze Enhanced, Breeze, Sierra Breeze and Breeze Enhanced for obvious reasons :)

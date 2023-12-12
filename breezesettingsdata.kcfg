@@ -74,7 +74,7 @@
           <choice name="BorderVeryHuge" />
           <choice name="BorderOversized" />
       </choices>
-      <default>BorderTiny</default>
+      <default>BorderNone</default>
     </entry>
 
     <!-- title alignment -->
@@ -172,15 +172,6 @@
     </entry>
 
     <entry name="TitleBarFont" type = "String"/>
-
-    <!-- animations -->
-    <entry name="AnimationsEnabled" type = "Bool">
-       <default>true</default>
-    </entry>
-
-    <entry name="AnimationsDuration" type = "Int">
-       <default>150</default>
-    </entry>
 
     <!-- dialogs -->
     ￼	<entry name="IsDialog" type = "Bool">

@@ -416,21 +416,9 @@ namespace Breeze
         setTitleBar(QRect(x, y, width, height));
     }
 
-    //________________________________________________________________
     void Decoration::updateAnimationState()
     {
-        if( m_internalSettings->animationsEnabled() )
-        {
-
-            auto c = client().toStrongRef().data();
-            m_animation->setDirection( c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
-            if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
-
-        } else {
-
-            update();
-
-        }
+        update();
     }
 
     //________________________________________________________________
@@ -651,9 +639,6 @@ namespace Breeze
     {
 
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
-
-        // animation
-        m_animation->setDuration( m_internalSettings->animationsDuration() );
 
         // borders
         recalculateBorders();

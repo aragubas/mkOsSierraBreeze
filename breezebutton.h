@@ -95,9 +95,6 @@ namespace Breeze
         //* apply configuration changes
         void reconfigure();
 
-        //* animation state
-        void updateAnimationState(bool);
-
     private:
 
         //* private constructor
@@ -119,11 +116,6 @@ namespace Breeze
         //*@hover buttons
         //@{
         bool hovered() const;
-        //@}
-
-        //*@button radius
-        //@{
-        qreal buttonRadius() const;
         //@}
 
         Flag m_flag = FlagNone;
