@@ -200,8 +200,8 @@ namespace Breeze
 
         const qreal width( m_iconSize.width() );
         auto d = qobject_cast<Decoration*>( decoration() );
-        //painter->scale( 0.75, 0.75 );
-        // painter->translate( 4, 4 );
+        painter->scale(0.8, 0.8);
+        painter->translate(4, 4); // TODO: Calculate scaling offset
 
         bool inactiveWindow( d && !d->client().toStrongRef().data()->isActive() );
         bool isMatchTitleBarColor( d && d->internalSettings()->matchColorForTitleBar() );
