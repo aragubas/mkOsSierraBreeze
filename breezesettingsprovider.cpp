@@ -34,7 +34,7 @@ namespace Breeze
 
     //__________________________________________________________________
     SettingsProvider::SettingsProvider():
-        m_config( KSharedConfig::openConfig( QStringLiteral("sierrabreezeenhancedrc") ) )
+        m_config( KSharedConfig::openConfig( QStringLiteral("mkossierrabreezerc") ) )
     { reconfigure(); }
 
     //__________________________________________________________________

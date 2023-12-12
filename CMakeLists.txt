@@ -1,5 +1,4 @@
-
-project(sierrabreezeenhanced)
+project(mkossierrabreeze)
 set(PROJECT_VERSION "1.3.3")
 set(PROJECT_VERSION_MAJOR 0)
 
@@ -60,18 +59,18 @@ add_subdirectory(libbreezecommon)
 
 ################# newt target #################
 ### plugin classes
-set(sierrabreezeenhanced_SRCS
+set(mkossierrabreeze_SRCS
     breezebutton.cpp
     breezedecoration.cpp
     breezeexceptionlist.cpp
     breezesettingsprovider.cpp
     breezesizegrip.cpp)
 
-kconfig_add_kcfg_files(sierrabreezeenhanced_SRCS breezesettings.kcfgc)
+kconfig_add_kcfg_files(mkossierrabreeze_SRCS breezesettings.kcfgc)
 
 ### config classes
 ### they are kept separately because they might move in a separate library in the future
-set(sierrabreezeenhanced_config_SRCS
+set(mkossierrabreeze_config_SRCS
     config/breezeconfigwidget.cpp
     config/breezedetectwidget.cpp
     config/breezeexceptiondialog.cpp
@@ -80,28 +79,28 @@ set(sierrabreezeenhanced_config_SRCS
     config/breezeitemmodel.cpp
 )
 
-set(sierrabreezeenhanced_config_PART_FORMS
+set(mkossierrabreeze_config_PART_FORMS
    config/ui/breezeconfigurationui.ui
    config/ui/breezedetectwidget.ui
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
 )
 
-ki18n_wrap_ui(sierrabreezeenhanced_config_PART_FORMS_HEADERS ${sierrabreezeenhanced_config_PART_FORMS})
+ki18n_wrap_ui(mkossierrabreeze_config_PART_FORMS_HEADERS ${mkossierrabreeze_config_PART_FORMS})
 
 ### build library
-add_library(sierrabreezeenhanced MODULE
-    ${sierrabreezeenhanced_SRCS}
-    ${sierrabreezeenhanced_config_SRCS}
-    ${sierrabreezeenhanced_config_PART_FORMS_HEADERS})
+add_library(mkossierrabreeze MODULE
+    ${mkossierrabreeze_SRCS}
+    ${mkossierrabreeze_config_SRCS}
+    ${mkossierrabreeze_config_PART_FORMS_HEADERS})
 
-target_link_libraries(sierrabreezeenhanced
+target_link_libraries(mkossierrabreeze
     PUBLIC
         Qt5::Core
         Qt5::Gui
         Qt5::DBus
     PRIVATE
-        sierrabreezeenhancedcommon5
+        mkossierrabreezecommon5
         KDecoration2::KDecoration
         KF5::ConfigCore
         KF5::CoreAddons
@@ -112,14 +111,14 @@ target_link_libraries(sierrabreezeenhanced
         KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
-  target_link_libraries(sierrabreezeenhanced
+  target_link_libraries(mkossierrabreeze
     PUBLIC
       Qt5::X11Extras
       XCB::XCB)
 endif()
 
 
-install(TARGETS sierrabreezeenhanced DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
-install(FILES config/sierrabreezeenhancedconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
+install(TARGETS mkossierrabreeze DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
+install(FILES config/mkossierrabreezeconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
 # install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
 # install(FILES config/breezedecorationconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})

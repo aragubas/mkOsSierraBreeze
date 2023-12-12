@@ -38,7 +38,7 @@ namespace Breeze
 
     ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
         KCModule(parent, args),
-        m_configuration( KSharedConfig::openConfig( QStringLiteral( "sierrabreezeenhancedrc" ) ) ),
+        m_configuration( KSharedConfig::openConfig( QStringLiteral( "mkossierrabreezerc" ) ) ),
         m_changed( false )
     {
 

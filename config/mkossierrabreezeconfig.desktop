@@ -1,10 +1,10 @@
 [Desktop Entry]
-Exec=kcmshell5 sierrabreezeenhancedconfig
+Exec=kcmshell5 mkossierrabreezeconfig
 Icon=preferences-system-windows
 Type=Service
 X-KDE-ServiceTypes=KCModule
 
-X-KDE-Library=org.kde.kdecoration2/sierrabreezeenhanced
+X-KDE-Library=org.kde.kdecoration2/mkossierrabreeze
 X-KDE-PluginKeyword=kcmodule
 X-KDE-ParentApp=kcontrol
 X-KDE-Weight=60
