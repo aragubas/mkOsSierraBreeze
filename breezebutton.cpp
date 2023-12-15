@@ -276,7 +276,7 @@ namespace Breeze
 
                   if (isChecked()) {
                         const int marginBase = margin / 1.5;
-                        const int lowestPoint = (double)m_iconSize.height() - marginBase;
+                        const int lowestPoint = m_iconSize.height() - marginBase - 1;
                         const int rightPoint = m_iconSize.width() - (marginBase + 1);
 
                         path1.moveTo(centerPoint.x() - 0.5, centerPoint.y() + 0.5); // Center Point
