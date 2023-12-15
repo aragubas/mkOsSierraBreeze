@@ -155,7 +155,7 @@ namespace Breeze
     }
 
     void Button::drawButtonbackground(QPainter* painter, QColor button_color, QColor titleBarColor) const {
-      const qreal width( m_iconSize.width() );
+      const qreal width(m_iconSize.width());
       const int titlebarColorGrayness = qGray(titleBarColor.rgb());
 
       QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
@@ -165,7 +165,7 @@ namespace Breeze
 
 
       // Translates to the center
-      QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
+      const QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
 
       // Debug Elipse
       // painter->setBrush(QColor(255, 0, 255));
@@ -176,7 +176,7 @@ namespace Breeze
       // Draws the actual ellipse
       //const qreal radius = 7;
       painter->setBrush(button_color);
-      painter->drawEllipse(QPointF(0, 0), centerPoint.x() / 1.4, centerPoint.y() / 1.4);
+      painter->drawEllipse(QPointF(0, 0), centerPoint.x() / 1.5, centerPoint.y() / 1.5);
 
       // Resets Brush
       painter->setBrush(Qt::NoBrush);
@@ -198,8 +198,8 @@ namespace Breeze
         // painter->scale(0.8, 0.8);
         // painter->translate(4, 4); // TODO: Calculate scaling offset
 
-        const bool inactiveWindow( d && !d->client().toStrongRef().data()->isActive() );
-        const bool isMatchTitleBarColor( d && d->internalSettings()->matchColorForTitleBar() );
+        const bool inactiveWindow (d && !d->client().toStrongRef().data()->isActive());
+        const bool isMatchTitleBarColor (d && d->internalSettings()->matchColorForTitleBar());
 
         const QColor darkSymbolColor( ( inactiveWindow && isMatchTitleBarColor ) ? QColor(250, 251, 252) : QColor(34, 45, 50) );
         const QColor lightSymbolColor( ( inactiveWindow && isMatchTitleBarColor ) ? QColor(192, 193, 194) : QColor(250, 251, 252) );
@@ -213,7 +213,7 @@ namespace Breeze
         symbol_pen.setWidthF( 9./7.*1.7*qMax((qreal)1.0, 20/width ) );
 
         const int titlebarColorGrayness = qGray(titleBarColor.rgb());
-        const double margin = (width / 2) / 1.3; // 2 = Touches orb border, 0 = Very Smol
+        const int margin = (m_iconSize.width() / 2) / 1.35; // 2 = Touches orb border, 0 = Very Smol
 
         switch( type() ) {
 
@@ -234,16 +234,19 @@ namespace Breeze
                 if ( this->hovered() ) {
                   // Hardcoded color since I don't know the original color
                   // and the multiplication mode
-                  symbol_pen.setColor(QColor(77, 0, 0));
+                  if (!inactiveWindow) {
+                    symbol_pen.setColor(QColor(77, 0, 0));
+                  } else {
+                    symbol_pen.setColor(symbolColor);
+                  }
                   painter->setPen( symbol_pen );
 
                   // Draws an X shape
-                  const int bottomPoint = m_iconSize.height() - margin;
-                  const int rightPoint = m_iconSize.width() - margin;
-                  // painter->setBrush(QColor(255, 255, 0));
-                  // painter->drawRect(0, 0, geometry().width(), geometry().height());
-                  painter->drawLine( QPointF( margin, margin ), QPointF( rightPoint, bottomPoint ) );
-                  painter->drawLine( QPointF( margin, bottomPoint ), QPointF( rightPoint, margin ) );
+                  const int bottomPoint = m_iconSize.height() - margin - 1;
+                  const int rightPoint = m_iconSize.width() - margin - 1;
+
+                  painter->drawLine(QPointF(margin, margin), QPointF(rightPoint, bottomPoint));
+                  painter->drawLine(QPointF(margin, bottomPoint), QPointF(rightPoint, margin));
                 }
                 break;
             }
@@ -265,47 +268,45 @@ namespace Breeze
                 if ( this->hovered() ) {
                   painter->setPen( Qt::NoPen );
 
-                // two triangles
-                QPainterPath path1, path2;
-                QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
-                const double slice = margin / 3;
-                const double halfSlice = slice / 2;
-                if (isChecked()) {
-                      const double marginBase = margin / 1.5;
-                      const double lowestPoint = (double)m_iconSize.height() - marginBase;
-                      const double rightPoint = m_iconSize.width() - marginBase;
-                      const double quarterSlice = slice / 4;
+                  // two triangles
+                  QPainterPath path1, path2;
+                  QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
+                  const int slice = margin / 3;
+                  const int halfSlice = slice / 2;
 
-                      path1.moveTo(centerPoint.x() - 0.5, centerPoint.y() + 0.5); // Center Point
-                      path1.lineTo(marginBase, centerPoint.y());
-                      path1.lineTo(centerPoint.x(), lowestPoint);
+                  if (isChecked()) {
+                        const int marginBase = margin / 1.5;
+                        const int lowestPoint = (double)m_iconSize.height() - marginBase;
+                        const int rightPoint = m_iconSize.width() - (marginBase + 1);
 
-                      path2.moveTo(centerPoint.x() + 0.5, centerPoint.y() - 0.5); // Center Point
-                      path2.lineTo(centerPoint.x() + 0.5, marginBase); // Left Most Point
-                      path2.lineTo(rightPoint, centerPoint.y()); // Right most point
+                        path1.moveTo(centerPoint.x() - 0.5, centerPoint.y() + 0.5); // Center Point
+                        path1.lineTo(marginBase, centerPoint.y());
+                        path1.lineTo(centerPoint.x(), lowestPoint);
+
+                        path2.moveTo(centerPoint.x() + 0.5, centerPoint.y() - 0.5); // Center Point
+                        path2.lineTo(centerPoint.x() + 0.5, marginBase); // Left Most Point
+                        path2.lineTo(rightPoint, centerPoint.y()); // Right most point
 
 
-                  }
-                  else
-                  {
-                      const double marginBase = margin / 1.2;
-                      const double lowestPoint = m_iconSize.height() - marginBase;
-                      const double rightPoint = m_iconSize.width() - marginBase;
+                    } else {
+                        const int marginBase = margin / 1.2;
+                        const int lowestPoint = m_iconSize.height() - marginBase;
+                        const int rightPoint = m_iconSize.width() - (marginBase + 1);
 
-                      path1.setFillRule(Qt::FillRule::WindingFill);
-                      path1.moveTo(marginBase, lowestPoint); // Base - Bottom Left Corner
-                      path1.lineTo(marginBase, marginBase + halfSlice); // Top - Top Left Corner
-                      path1.lineTo(rightPoint - halfSlice, lowestPoint); // Right - Bottom Right Corner
+                        path1.moveTo(marginBase, lowestPoint); // Base - Bottom Left Corner
+                        path1.lineTo(marginBase, marginBase + halfSlice); // Top - Top Left Corner
+                        path1.lineTo(rightPoint - halfSlice, lowestPoint); // Right - Bottom Right Corner
 
-                      path2.moveTo(rightPoint, marginBase); // Base - Top Right Corner
-                      path2.lineTo(marginBase + halfSlice, marginBase); // Left - Top Left Corner
-                      path2.lineTo(rightPoint, lowestPoint - halfSlice); // Bottom Right - Bottom Right Corner
-                  }
+                        path2.moveTo(rightPoint, marginBase); // Base - Top Right Corner
+                        path2.lineTo(marginBase + halfSlice, marginBase); // Left - Top Left Corner
+                        path2.lineTo(rightPoint, lowestPoint - halfSlice); // Bottom Right - Bottom Right Corner
+                    }
 
-                  QColor maximizeForegroundColor = QColor(0, 101, 0); // Hardcoded color since I don't know the origina color and the mult mode used'
+                    // Hardcoded color since I don't know the origina color and the mult mode used'
+                    QBrush maximizeForegroundColor = QBrush(!inactiveWindow ? QColor(0, 101, 0) : symbolColor);
 
-                  painter->fillPath(path1, QBrush(maximizeForegroundColor));
-                  painter->fillPath(path2, QBrush(maximizeForegroundColor));
+                    painter->fillPath(path1, maximizeForegroundColor);
+                    painter->fillPath(path2, maximizeForegroundColor);
 
                 }
                 break;
@@ -314,30 +315,34 @@ namespace Breeze
             case DecorationButtonType::Minimize:
             {
                 QColor button_color;
-                if ( !inactiveWindow && titlebarColorGrayness < 128 )
+                if ( !inactiveWindow && titlebarColorGrayness < 128 ) {
                   button_color = QColor(223, 192, 76);
-                else if( !inactiveWindow )
+                }else if( !inactiveWindow ){
                   button_color = QColor(255, 193, 46);
-                else if ( titlebarColorGrayness < 128 )
+                } else if ( titlebarColorGrayness < 128 ) {
                   button_color = QColor(100, 100, 100);
-                else
+                } else {
                   button_color = QColor(200, 200, 200);
+                }
 
                 drawButtonbackground(painter, button_color, titleBarColor);
 
-                if ( this->hovered() )
-                {
-                  symbol_pen.setColor(QColor(153, 87, 0));
+                if ( this->hovered() ) {
+                  if (!inactiveWindow) {
+                    symbol_pen.setColor(QColor(153, 87, 0));
+                  } else {
+                    symbol_pen.setColor(symbolColor);
+                  }
+
                   painter->setPen( symbol_pen );
-                  int centerY = m_iconSize.height() / 2;
-                  int marginBase = margin / 1.2;
-                  painter->drawLine( QPointF(marginBase, centerY ), QPointF( m_iconSize.width() - marginBase, centerY ) );
+                  const int centerY = m_iconSize.height() / 2;
+
+                  painter->drawLine(QPointF(margin - 1, centerY), QPointF(m_iconSize.width() - margin, centerY));
                 }
                 break;
             }
 
-            case DecorationButtonType::OnAllDesktops:
-            {
+            case DecorationButtonType::OnAllDesktops: {
                 QColor button_color;
                 if ( !inactiveWindow )
                   button_color = QColor(125, 209, 200);
@@ -349,8 +354,7 @@ namespace Breeze
 
                 drawButtonbackground(painter, button_color, titleBarColor);
 
-                if ( this->hovered() || isChecked() )
-                {
+                if ( this->hovered() || isChecked() ) {
                   painter->setPen( Qt::NoPen );
                   painter->setBrush(QBrush(symbolColor));
                   QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
@@ -359,8 +363,7 @@ namespace Breeze
                 break;
             }
 
-            case DecorationButtonType::Shade:
-            {
+            case DecorationButtonType::Shade: {
                 QColor button_color;
                 if ( !inactiveWindow )
                   button_color = QColor(204, 176, 213);
@@ -371,8 +374,7 @@ namespace Breeze
 
                 drawButtonbackground(painter, button_color, titleBarColor);
 
-                if ( isChecked() )
-                {
+                if ( isChecked() ) {
                     painter->setPen( symbol_pen );
                     painter->drawLine( QPointF( 6, 12 ), QPointF( 12, 12 ) );
                     painter->setPen( Qt::NoPen );
