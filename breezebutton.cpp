@@ -289,8 +289,8 @@ namespace Breeze
 
 
                     } else {
-                        const int marginBase = margin / 1.2;
-                        const int lowestPoint = m_iconSize.height() - marginBase;
+                        const int marginBase = margin / 1.05;
+                        const int lowestPoint = m_iconSize.height() - marginBase - 1;
                         const int rightPoint = m_iconSize.width() - (marginBase + 1);
 
                         path1.moveTo(marginBase, lowestPoint); // Base - Bottom Left Corner
