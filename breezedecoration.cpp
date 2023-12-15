@@ -768,7 +768,7 @@ namespace Breeze
 
         // padding
         const int vPadding = s->smallSpacing() * Metrics::TitleBar_TopMargin;
-        const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+        //const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
         const int hMargin = 0.5 * s->smallSpacing() * m_internalSettings->buttonPadding() + 0.5 * s->smallSpacing();
 
         // left buttons
@@ -935,10 +935,8 @@ namespace Breeze
         const int baseSize = settings()->gridUnit();
         switch( m_internalSettings->buttonSize() )
         {
-            case InternalSettings::ButtonTiny: return baseSize;
-            case InternalSettings::ButtonSmall: return baseSize*1.5;
             default:
-            case InternalSettings::ButtonDefault: return baseSize*2;
+            case InternalSettings::ButtonDefault: return baseSize*2.3;
             case InternalSettings::ButtonLarge: return baseSize*2.5;
             case InternalSettings::ButtonVeryLarge: return baseSize*3.5;
         }
