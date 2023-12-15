@@ -1,4 +1,3 @@
-#pragma once
 /*
  * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * Copyright 2023  Paulo Otávio de Lima (aka Aragubas) <dpaulootavio5@outlook.com>
@@ -20,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
 #include "breezedecoration.h"
 #include "breezesettings.h"
 #include "breeze.h"

@@ -2,6 +2,7 @@
 * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
 * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
 * Copyright 2018  Vlad Zahorodnii <vlad.zahorodnii@kde.org>
+* Copyright 2023  Paulo Otávio de Lima (aka Aragubas) <dpaulootavio5@outlook.com>
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -168,7 +169,6 @@ namespace Breeze
     using KDecoration2::ColorRole;
     using KDecoration2::ColorGroup;
 
-    //________________________________________________________________
     static int g_sDecoCount = 0;
     static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
     static int g_shadowStrength = 255;
@@ -179,7 +179,6 @@ namespace Breeze
     static int g_shadowStrengthInactiveWindows = 255;
     static QColor g_shadowColorInactiveWindows = Qt::black;
 
-    //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_animation( new QVariantAnimation( this ) )
@@ -187,8 +186,7 @@ namespace Breeze
         g_sDecoCount++;
     }
 
-    //________________________________________________________________
-    Decoration::~Decoration()
+   Decoration::~Decoration()
     {
         g_sDecoCount--;
         if (g_sDecoCount == 0) {
@@ -200,7 +198,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::setOpacity( qreal value )
     {
         if( m_opacity == value ) return;
@@ -210,7 +207,6 @@ namespace Breeze
         if( m_sizeGrip ) m_sizeGrip->update();
     }
 
-    //________________________________________________________________
     QColor Decoration::titleBarColor() const
     {
         QColor titleBarColor( this->rawTitleBarColor() );
@@ -234,11 +230,8 @@ namespace Breeze
         return titleBarColor;
     }
 
-    //________________________________________________________________
     QColor Decoration::outlineColor() const
     {
-        if( !m_internalSettings->drawTitleBarSeparator() ) return QColor();
-
         QColor titleBarColor ( rawTitleBarColor() );
 
         uint r = qRed(titleBarColor.rgb());
@@ -256,7 +249,6 @@ namespace Breeze
         return outlineColor;
     }
 
-    //________________________________________________________________
     QColor Decoration::rawTitleBarColor() const
     {
         auto c = client().toStrongRef().data();
@@ -274,11 +266,9 @@ namespace Breeze
         else {
           titleBarColor = c->palette().color(QPalette::Window);
         }
-        titleBarColor.setAlpha(titleBarAlpha());
         return titleBarColor;
     }
 
-    //________________________________________________________________
     QColor Decoration::fontColor() const
     {
          auto c = client().toStrongRef().data();
@@ -316,7 +306,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::setButtonHovered( bool value )
     {
         if (m_buttonHovered == value) {
@@ -326,7 +315,6 @@ namespace Breeze
         emit buttonHoveredChanged();
     }
 
-    //________________________________________________________________
     void Decoration::hoverMoveEvent(QHoverEvent *event)
     {
         if (objectName() != "applet-window-buttons") {
@@ -337,7 +325,6 @@ namespace Breeze
         KDecoration2::Decoration::hoverMoveEvent(event);
     }
 
-    //________________________________________________________________
     void Decoration::init()
     {
         auto c = client().toStrongRef().data();
@@ -403,7 +390,6 @@ namespace Breeze
         createShadow();
     }
 
-    //________________________________________________________________
     void Decoration::updateTitleBar()
     {
         auto s = settings();
@@ -421,7 +407,6 @@ namespace Breeze
         update();
     }
 
-    //________________________________________________________________
     void Decoration::updateShadow()
     {
         auto c = client().toStrongRef().data();
@@ -432,7 +417,6 @@ namespace Breeze
           updateInactiveShadow();
     }
 
-    //________________________________________________________________
     void Decoration::updateActiveShadow() {
 
         CompositeShadowParams params;
@@ -511,7 +495,6 @@ namespace Breeze
         setShadow(g_sShadow);
     }
 
-    //________________________________________________________________
     void Decoration::updateInactiveShadow() {
 
         CompositeShadowParams params;
@@ -590,7 +573,6 @@ namespace Breeze
         setShadow(g_sShadow);
     }
 
-    //________________________________________________________________
     void Decoration::updateSizeGripVisibility()
     {
         auto c = client().toStrongRef().data();
@@ -598,7 +580,6 @@ namespace Breeze
         { m_sizeGrip->setVisible( c->isResizeable() && !isMaximized() && !c->isShaded() ); }
     }
 
-    //________________________________________________________________
     int Decoration::borderSize(bool bottom) const
     {
         const int baseSize = settings()->smallSpacing();
@@ -634,7 +615,6 @@ namespace Breeze
         }
     }
 
-    //________________________________________________________________
     void Decoration::reconfigure()
     {
 
@@ -654,7 +634,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::recalculateBorders()
     {
         auto c = client().toStrongRef().data();
@@ -697,7 +676,6 @@ namespace Breeze
         setResizeOnlyBorders(QMargins(extHSides, extVSides, extHSides, extVSides));
     }
 
-    //________________________________________________________________
     void Decoration::createButtons()
     {
         m_leftButtons = new KDecoration2::DecorationButtonGroup(KDecoration2::DecorationButtonGroup::Position::Left, this, &Button::create);
@@ -712,7 +690,7 @@ namespace Breeze
         Q_ASSERT(c);
 
         //disable blur if the titlebar is opaque
-        if( (m_internalSettings->opaqueTitleBar() && c->isMaximized() )
+        if( (c->isMaximized() )
             || ( m_opacity == 100 && this->titleBarColor().alpha() == 255 )
         ){ //opaque titlebar colours
             setBlurRegion( QRegion() );
@@ -770,19 +748,18 @@ namespace Breeze
         
     }
 
-    //________________________________________________________________
-    void Decoration::updateButtonsGeometryDelayed()
-    { QTimer::singleShot( 0, this, &Decoration::updateButtonsGeometry ); }
+    void Decoration::updateButtonsGeometryDelayed() {
+        QTimer::singleShot( 0, this, &Decoration::updateButtonsGeometry );
+    }
 
-    //________________________________________________________________
     void Decoration::updateButtonsGeometry()
     {
         const auto s = settings();
 
         // adjust button position
         const int bWidth = buttonHeight();
-        const int bHeight = bWidth + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
+        const int bHeight = buttonHeight();
+        const int verticalOffset = (isTopEdge() ? s->smallSpacing() * Metrics::TitleBar_TopMargin : 0) + (captionHeight()-buttonHeight()) / 2;
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() + m_rightButtons->buttons() )
         {
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
@@ -790,25 +767,23 @@ namespace Breeze
         }
 
         // padding
-        const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-        const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-        const int hMargin = 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() + 0.5*s->smallSpacing()*m_internalSettings->hOffset();
+        const int vPadding = s->smallSpacing() * Metrics::TitleBar_TopMargin;
+        const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+        const int hMargin = 0.5 * s->smallSpacing() * m_internalSettings->buttonPadding() + 0.5 * s->smallSpacing();
 
         // left buttons
         if( !m_leftButtons->buttons().isEmpty() )
         {
-
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
-            m_leftButtons->setSpacing(0.5*s->smallSpacing()*m_internalSettings->buttonSpacing());
+            //m_leftButtons->setSpacing(0.5*s->smallSpacing()*m_internalSettings->buttonSpacing());
 
             if( isLeftEdge() )
             {
-                // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
                 button->setFlag( Button::FlagFirstInList );
 
-                m_leftButtons->setPos(QPointF(hMargin, verticalOffset + vPadding));
+                m_leftButtons->setPos(QPointF(hMargin, verticalOffset));
 
             } else m_leftButtons->setPos(QPointF(hMargin + borderLeft(), verticalOffset + vPadding));
 
@@ -819,16 +794,15 @@ namespace Breeze
         {
 
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
-            m_rightButtons->setSpacing(0.5*s->smallSpacing()*m_internalSettings->buttonSpacing());
+            //m_rightButtons->setSpacing(0.5*s->smallSpacing()*m_internalSettings->buttonSpacing());
 
             if( isRightEdge() )
             {
+                auto button = static_cast<Button*>(m_rightButtons->buttons().back().data());
+                button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
+                button->setFlag(Button::FlagLastInList);
 
-                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
-                button->setFlag( Button::FlagLastInList );
-
-                m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hMargin, verticalOffset + vPadding));
+                m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hMargin, verticalOffset));
 
             } else m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hMargin - borderRight(), verticalOffset + vPadding));
 
@@ -838,7 +812,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
     {
         // TODO: optimize based on repaintRegion
@@ -895,7 +868,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     {
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
@@ -958,7 +930,6 @@ namespace Breeze
         }
     }
 
-    //________________________________________________________________
     int Decoration::buttonHeight() const
     {
         const int baseSize = settings()->gridUnit();
@@ -974,11 +945,12 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     int Decoration::captionHeight() const
-    { return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ); }
+    {
+        return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin);
 
-    //________________________________________________________________
+    }
+
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
@@ -987,11 +959,11 @@ namespace Breeze
             auto s = settings();
             auto c = client().toStrongRef().data();
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() + 0.5*s->smallSpacing()*m_internalSettings->hOffset() :
+                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() + 0.5*s->smallSpacing() :
                 m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() ;
 
             const int rightOffset = m_rightButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() + 0.5*s->smallSpacing()*m_internalSettings->hOffset() :
+                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() + 0.5*s->smallSpacing() :
                 size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + 0.5*s->smallSpacing()*m_internalSettings->buttonPadding() ;
 
             const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
@@ -1033,7 +1005,6 @@ namespace Breeze
 
     }
 
-    //________________________________________________________________
     void Decoration::createShadow()
     {
         if ( !g_sShadow ) {
@@ -1071,10 +1042,8 @@ namespace Breeze
           updateShadow();
     }
 
-    //_________________________________________________________________
     void Decoration::createSizeGrip()
     {
-
         // do nothing if size grip already exist
         if( m_sizeGrip ) return;
 
@@ -1096,7 +1065,6 @@ namespace Breeze
 
     }
 
-    //_________________________________________________________________
     void Decoration::deleteSizeGrip()
     {
         if( m_sizeGrip )

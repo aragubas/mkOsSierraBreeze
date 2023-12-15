@@ -4,6 +4,7 @@
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// Copyright (c) 2023 Paulo Otávio de Lima (aka Aragubas) <dpaulootavio5@outlook.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -59,9 +60,6 @@ namespace Breeze
             // propagate all features found in mask to the output configuration
             if( exception.mask() & BorderSize ) configuration->setBorderSize( exception.borderSize() );
             configuration->setHideTitleBar( exception.hideTitleBar() );
-            configuration->setDrawTitleBarSeparator( exception.drawTitleBarSeparator() );
-            configuration->setOpaqueTitleBar( exception.opaqueTitleBar() );
-            configuration->setOpacityOverride( exception.opacityOverride() );
             configuration->setMatchColorForTitleBar( exception.matchColorForTitleBar() );
             configuration->setIsDialog( exception.isDialog() );
 

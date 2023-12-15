@@ -99,7 +99,6 @@ namespace Breeze
         inline bool isBottomEdge() const;
 
         inline bool hideTitleBar() const;
-        inline int titleBarAlpha() const;
         inline bool matchColorForTitleBar() const;
         inline bool drawBackgroundGradient() const;
         inline bool systemForegroundColor() const;
@@ -227,15 +226,6 @@ namespace Breeze
 
     bool Decoration::hideTitleBar() const
     { return m_internalSettings->hideTitleBar() == 3 || ( m_internalSettings->hideTitleBar() == 1 && client().toStrongRef().data()->isMaximized() ) || ( m_internalSettings->hideTitleBar() == 2 && ( client().toStrongRef().data()->isMaximized() || client().toStrongRef().data()->isMaximizedVertically()  || client().toStrongRef().data()->isMaximizedHorizontally()) ); }
-
-    int Decoration::titleBarAlpha() const
-    {
-        if (m_internalSettings->opaqueTitleBar())
-            return 255;
-        int a = m_internalSettings->opacityOverride() > -1 ? m_internalSettings->opacityOverride() : m_internalSettings->backgroundOpacity();
-        a =  qBound(0, a, 100);
-        return qRound(static_cast<qreal>(a) * static_cast<qreal>(2.55));
-    }
 
     bool Decoration::matchColorForTitleBar() const
     { return m_internalSettings->matchColorForTitleBar(); }

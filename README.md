@@ -1,6 +1,6 @@
 # mkOS Sierra Breeze
 
-A fork of [Sierra Breeze Enhanced](https://github.com/kupiqu/SierraBreezeEnhanced) with some changes and simplified
+A fork of [Sierra Breeze Enhanced](https://github.com/kupiqu/SierraBreezeEnhanced) but simplified
 
 ## Overview
 

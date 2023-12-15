@@ -92,9 +92,6 @@ namespace Breeze
         m_ui.hideTitleBar->setCurrentIndex( m_exception->hideTitleBar() );
         m_ui.matchColorForTitleBar->setChecked( m_exception->matchColorForTitleBar() );
         m_ui.systemForegroundColor->setChecked( m_exception->systemForegroundColor() );
-        m_ui.drawTitleBarSeparator->setChecked( m_exception->drawTitleBarSeparator() );
-        m_ui.opaqueTitleBar->setChecked( m_exception->opaqueTitleBar() );
-        m_ui.opacityOverrideLabelSpinBox->setValue( m_exception->opacityOverride() );
         m_ui.isDialog->setChecked( m_exception->isDialog() );
 
         // mask
@@ -114,9 +111,6 @@ namespace Breeze
         m_exception->setHideTitleBar( m_ui.hideTitleBar->currentIndex() );
         m_exception->setMatchColorForTitleBar( m_ui.matchColorForTitleBar->isChecked() );
         m_exception->setSystemForegroundColor( m_ui.systemForegroundColor->isChecked() );
-        m_exception->setDrawTitleBarSeparator( m_ui.drawTitleBarSeparator->isChecked() );
-        m_exception->setOpaqueTitleBar( m_ui.opaqueTitleBar->isChecked() );
-        m_exception->setOpacityOverride( m_ui.opacityOverrideLabelSpinBox->value() );
         m_exception->setIsDialog( m_ui.isDialog->isChecked() );
 
         // mask
@@ -140,9 +134,6 @@ namespace Breeze
         else if( m_exception->hideTitleBar() != m_ui.hideTitleBar->currentIndex() ) modified = true;
         else if( m_exception->matchColorForTitleBar() != m_ui.matchColorForTitleBar->isChecked() ) modified = true;
         else if( m_exception->systemForegroundColor() != m_ui.systemForegroundColor->isChecked() ) modified = true;
-        else if( m_exception->drawTitleBarSeparator() != m_ui.drawTitleBarSeparator->isChecked() ) modified = true;
-        else if( m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked() ) modified = true;
-        else if( m_exception->opacityOverride() != m_ui.opacityOverrideLabelSpinBox->value() ) modified = true;
         else if( m_exception->isDialog() != m_ui.isDialog->isChecked() ) modified = true;
         else
         {

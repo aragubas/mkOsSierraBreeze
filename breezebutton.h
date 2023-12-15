@@ -66,15 +66,6 @@ namespace Breeze
         //* standalone buttons
         bool isStandAlone() const { return m_flag == FlagStandalone; }
 
-        //* offset
-        void setOffset( const QPointF& value ) { m_offset = value; }
-
-        //* horizontal offset, for rendering
-        void setHorizontalOffset( qreal value ) { m_offset.setX( value ); }
-
-        //* vertical offset, for rendering
-        void setVerticalOffset( qreal value ) { m_offset.setY( value ); }
-
         //* set icon size
         void setIconSize( const QSize& value ) { m_iconSize = value; }
 
@@ -90,18 +81,13 @@ namespace Breeze
 
         //@}
 
-    private Q_SLOTS:
-
-        //* apply configuration changes
-        void reconfigure();
-
     private:
 
         //* private constructor
         explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
 
         /// Draw window buttons
-        void drawButtonbackground(QPainter*, QColor backgroundColor) const;
+        void drawButtonbackground(QPainter*, QColor button_color, QColor titleBarColor) const;
         void drawWindowButtons(QPainter*) const;
 
         //*@name colors
@@ -119,12 +105,6 @@ namespace Breeze
         //@}
 
         Flag m_flag = FlagNone;
-
-        //* active state change animation
-        QVariantAnimation *m_animation;
-
-        //* vertical offset (for rendering)
-        QPointF m_offset;
 
         //* icon size
         QSize m_iconSize;

@@ -50,24 +50,13 @@ namespace Breeze
         connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacing, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.buttonPadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.hOffset, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.unisonHovering, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.cornerRadiusSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawSizeGrip, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.buttonStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.opacitySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.gradientSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.drawTitleBarSeparator, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.hideTitleBar, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.matchColorForTitleBar, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.systemForegroundColor, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-
-        // track animations changes
-        connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
 
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -95,14 +84,10 @@ namespace Breeze
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.buttonSpacing->setValue( m_internalSettings->buttonSpacing() );
         m_ui.buttonPadding->setValue( m_internalSettings->buttonPadding() );
-        m_ui.hOffset->setValue( m_internalSettings->hOffset() );
         m_ui.unisonHovering->setChecked( m_internalSettings->unisonHovering() );
         m_ui.cornerRadiusSpinBox->setValue( m_internalSettings->cornerRadius() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
-        m_ui.opaqueTitleBar->setChecked( m_internalSettings->opaqueTitleBar() );
-        m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
-        m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.hideTitleBar->setCurrentIndex( m_internalSettings->hideTitleBar() );
         m_ui.matchColorForTitleBar->setChecked( m_internalSettings->matchColorForTitleBar() );
         m_ui.systemForegroundColor->setChecked( m_internalSettings->systemForegroundColor() );
@@ -140,14 +125,10 @@ namespace Breeze
         m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
         m_internalSettings->setButtonSpacing( m_ui.buttonSpacing->value() );
         m_internalSettings->setButtonPadding( m_ui.buttonPadding->value() );
-        m_internalSettings->setHOffset( m_ui.hOffset->value() );
         m_internalSettings->setUnisonHovering( m_ui.unisonHovering->isChecked() );
         m_internalSettings->setCornerRadius( m_ui.cornerRadiusSpinBox->value() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
-        m_internalSettings->setOpaqueTitleBar( m_ui.opaqueTitleBar->isChecked() );
-        m_internalSettings->setBackgroundOpacity(m_ui.opacitySpinBox->value());
-        m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
         m_internalSettings->setHideTitleBar( m_ui.hideTitleBar->currentIndex() );
         m_internalSettings->setMatchColorForTitleBar( m_ui.matchColorForTitleBar->isChecked() );
         m_internalSettings->setSystemForegroundColor( m_ui.systemForegroundColor->isChecked() );
@@ -199,18 +180,13 @@ namespace Breeze
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.buttonSpacing->setValue( m_internalSettings->buttonSpacing() );
         m_ui.buttonPadding->setValue( m_internalSettings->buttonPadding() );
-        m_ui.hOffset->setValue( m_internalSettings->hOffset() );
         m_ui.unisonHovering->setChecked( m_internalSettings->unisonHovering() );
         m_ui.cornerRadiusSpinBox->setValue( m_internalSettings->cornerRadius() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
-        m_ui.opaqueTitleBar->setChecked( m_internalSettings->opaqueTitleBar() );
-        m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.hideTitleBar->setCurrentIndex( m_internalSettings->hideTitleBar() );
         m_ui.matchColorForTitleBar->setChecked( m_internalSettings->matchColorForTitleBar() );
         m_ui.systemForegroundColor->setChecked( m_internalSettings->systemForegroundColor() );
-
-        m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
 
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
@@ -237,14 +213,10 @@ namespace Breeze
         else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
         else if( m_ui.buttonSpacing->value() != m_internalSettings->buttonSpacing() ) modified = true;
         else if ( m_ui.buttonPadding->value() != m_internalSettings->buttonPadding() ) modified = true;
-        else if ( m_ui.hOffset->value() != m_internalSettings->hOffset() ) modified = true;
         else if( m_ui.unisonHovering->isChecked() != m_internalSettings->unisonHovering() ) modified = true;
         else if( m_ui.cornerRadiusSpinBox->value() != m_internalSettings->cornerRadius() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
-        else if( m_ui.opaqueTitleBar->isChecked() !=  m_internalSettings->opaqueTitleBar() ) modified = true;
-        else if( m_ui.opacitySpinBox->value() != m_internalSettings->backgroundOpacity() ) modified = true;
-        else if (m_ui.drawTitleBarSeparator->isChecked() != m_internalSettings->drawTitleBarSeparator()) modified = true;
         else if ( m_ui.hideTitleBar->currentIndex() != m_internalSettings->hideTitleBar() ) modified = true;
         else if ( m_ui.matchColorForTitleBar->isChecked() != m_internalSettings->matchColorForTitleBar() ) modified = true;
         else if ( m_ui.systemForegroundColor->isChecked() != m_internalSettings->systemForegroundColor() ) modified = true;

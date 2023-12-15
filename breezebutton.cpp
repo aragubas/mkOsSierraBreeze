@@ -1,6 +1,7 @@
 /*
  * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
  * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * Copyright 2023  Paulo Otávio de Lima (aka Aragubas) <dpaulootavio5@outlook.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -37,27 +38,16 @@ namespace Breeze
 
     Button::Button(DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
-        , m_animation( new QVariantAnimation( this ) )
     {
-
-        // setup animation
-        // It is important start and end value are of the same type, hence 0.0 and not just 0
-        m_animation->setStartValue( 0.0 );
-        m_animation->setEndValue( 1.0 );
-        // Linear to have the same easing as Breeze animations
-        m_animation->setEasingCurve( QEasingCurve::Linear );
-        connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-            setOpacity(value.toReal());
-        });
 
         // setup default geometry
         const int height = decoration->buttonHeight();
+        //const int width = decoration-->button
         setGeometry(QRect(0, 0, height, height));
         setIconSize(QSize( height, height ));
 
         // connections
         connect(decoration->client().toStrongRef().data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
-        connect(decoration->settings().data(), &KDecoration2::DecorationSettings::reconfigured, this, &Button::reconfigure);
 
         if (decoration->objectName() == "applet-window-buttons") {
             connect( this, &Button::hoveredChanged, [=](bool hovered){
@@ -65,8 +55,6 @@ namespace Breeze
                     });
         }
         connect(decoration, SIGNAL(buttonHoveredChanged()), this, SLOT(update()));
-
-        reconfigure();
 
     }
 
@@ -89,32 +77,32 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 b->setVisible( d->client().toStrongRef().data()->isCloseable() );
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
-                break;
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
+                  break;
 
                 case DecorationButtonType::Maximize:
                 b->setVisible( d->client().toStrongRef().data()->isMaximizeable() );
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
-                break;
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
+                  break;
 
                 case DecorationButtonType::Minimize:
-                b->setVisible( d->client().toStrongRef().data()->isMinimizeable() );
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
-                break;
+                  b->setVisible( d->client().toStrongRef().data()->isMinimizeable() );
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
+                  break;
 
                 case DecorationButtonType::ContextHelp:
-                b->setVisible( d->client().toStrongRef().data()->providesContextHelp() );
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
-                break;
+                  b->setVisible( d->client().toStrongRef().data()->providesContextHelp() );
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
+                  break;
 
                 case DecorationButtonType::Shade:
-                b->setVisible( d->client().toStrongRef().data()->isShadeable() );
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
-                break;
+                  b->setVisible( d->client().toStrongRef().data()->isShadeable() );
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
+                  break;
 
                 case DecorationButtonType::Menu:
-                QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
-                break;
+                  QObject::connect(d->client().toStrongRef().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
+                  break;
 
                 default: break;
             }
@@ -133,10 +121,6 @@ namespace Breeze
         if (!decoration()) return;
 
         painter->save();
-
-        // translate from offset
-        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
-        else painter->translate( 0, m_offset.y() );
 
         if( !m_iconSize.isValid() || isStandAlone() ) m_iconSize = geometry().size().toSize();
 
@@ -170,16 +154,29 @@ namespace Breeze
 
     }
 
-    void Button::drawButtonbackground(QPainter* painter, QColor backgroundColor) const {
-      painter->setBrush(backgroundColor);
+    void Button::drawButtonbackground(QPainter* painter, QColor button_color, QColor titleBarColor) const {
+      const qreal width( m_iconSize.width() );
+      const int titlebarColorGrayness = qGray(titleBarColor.rgb());
+
+      QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
+      button_pen.setJoinStyle( Qt::MiterJoin );
+      button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+      painter->setPen( button_pen );
+
 
       // Translates to the center
       QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
+
+      // Debug Elipse
+      // painter->setBrush(QColor(255, 0, 255));
+      // painter->drawRect(0, 0, geometry().width(), geometry().height());
+
       painter->translate(centerPoint);
 
       // Draws the actual ellipse
-      const qreal radius = 7;
-      painter->drawEllipse(QPointF(0, 0), radius, radius);
+      //const qreal radius = 7;
+      painter->setBrush(button_color);
+      painter->drawEllipse(QPointF(0, 0), centerPoint.x() / 1.4, centerPoint.y() / 1.4);
 
       // Resets Brush
       painter->setBrush(Qt::NoBrush);
@@ -190,12 +187,11 @@ namespace Breeze
 
     void Button::drawWindowButtons( QPainter *painter ) const
     {
-
-        painter->setRenderHints( QPainter::Antialiasing );
+        painter->setRenderHints( QPainter::HighQualityAntialiasing );
 
         // Translates to the topLeft corner of the bounding box
         // This will be the base translation for all drawing
-        painter->translate( geometry().topLeft() );
+        painter->translate( geometry().topLeft());
 
         const qreal width( m_iconSize.width() );
         auto d = qobject_cast<Decoration*>( decoration() );
@@ -211,19 +207,17 @@ namespace Breeze
         QColor titleBarColor (d->titleBarColor());
 
         // symbols pen
-        QColor symbolColor = darkSymbolColor;
+        const QColor symbolColor = darkSymbolColor;
         QPen symbol_pen( symbolColor );
         symbol_pen.setJoinStyle( Qt::MiterJoin );
         symbol_pen.setWidthF( 9./7.*1.7*qMax((qreal)1.0, 20/width ) );
 
-        int titlebarColorGrayness = qGray(titleBarColor.rgb());
-        int margin = 8;
+        const int titlebarColorGrayness = qGray(titleBarColor.rgb());
+        const int margin = 8;
 
-        switch( type() )
-        {
+        switch( type() ) {
 
-            case DecorationButtonType::Close:
-            {
+            case DecorationButtonType::Close: {
                 QColor button_color;
                 if ( !inactiveWindow && titlebarColorGrayness < 128 ) {
                   button_color = QColor(238, 102, 90);
@@ -235,15 +229,9 @@ namespace Breeze
                   button_color = QColor(200, 200, 200);
                 }
 
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
+                drawButtonbackground(painter, button_color, titleBarColor);
 
-                drawButtonbackground(painter, button_color);
-
-                if ( this->hovered() )
-                {
+                if ( this->hovered() ) {
                   // Hardcoded color since I don't know the original color
                   // and the multiplication mode
                   symbol_pen.setColor(QColor(77, 0, 0));
@@ -252,14 +240,15 @@ namespace Breeze
                   // Draws an X shape
                   const int bottomPoint = m_iconSize.height() - margin;
                   const int rightPoint = m_iconSize.width() - margin;
+                  // painter->setBrush(QColor(255, 255, 0));
+                  // painter->drawRect(0, 0, geometry().width(), geometry().height());
                   painter->drawLine( QPointF( margin, margin ), QPointF( rightPoint, bottomPoint ) );
                   painter->drawLine( QPointF( margin, bottomPoint ), QPointF( rightPoint, margin ) );
                 }
                 break;
             }
 
-            case DecorationButtonType::Maximize:
-            {
+            case DecorationButtonType::Maximize: {
                 QColor button_color;
                 if ( !inactiveWindow && titlebarColorGrayness < 128 )
                   button_color = QColor(100, 196, 86);
@@ -269,21 +258,15 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
-                if ( this->hovered() )
-                {
+                if ( this->hovered() ) {
                   painter->setPen( Qt::NoPen );
 
                   // two triangles
                   QPainterPath path1, path2;
-                  if( isChecked() )
-                  {
+                  if( isChecked() ) {
                       QPoint centerPoint = QPoint(m_iconSize.width() / 2, m_iconSize.height() / 2);
                       const int marginBase = margin / 2;
                       const int lowestPoint = m_iconSize.height() - marginBase;
@@ -315,8 +298,6 @@ namespace Breeze
 
                   painter->fillPath(path1, QBrush(maximizeForegroundColor));
                   painter->fillPath(path2, QBrush(maximizeForegroundColor));
-                  //painter->setBrush(QBrush(QColor(255, 0, 255)));
-                  //painter->drawRoundedRect(margin, margin, m_iconSize.width() - margin, m_iconSize.height() - margin, 4, 4);
 
                 }
                 break;
@@ -333,12 +314,8 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( this->hovered() )
                 {
@@ -361,11 +338,8 @@ namespace Breeze
                 else
                   button_color = QColor(200, 200, 200);
                 QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( this->hovered() || isChecked() )
                 {
@@ -386,12 +360,8 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( isChecked() )
                 {
@@ -428,12 +398,8 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( this->hovered() || isChecked() )
                 {
@@ -458,12 +424,8 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( this->hovered() || isChecked() )
                 {
@@ -517,12 +479,8 @@ namespace Breeze
                   button_color = QColor(100, 100, 100);
                 else
                   button_color = QColor(200, 200, 200);
-                QPen button_pen( titlebarColorGrayness < 69 ? button_color.lighter(115) : button_color.darker(115) );
-                button_pen.setJoinStyle( Qt::MiterJoin );
-                button_pen.setWidthF( 9./7.*PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
-                painter->setPen( button_pen );
 
-                drawButtonbackground(painter, button_color);
+                drawButtonbackground(painter, button_color, titleBarColor);
 
                 if ( this->hovered() || isChecked() )
                 {
@@ -542,8 +500,7 @@ namespace Breeze
     }
 
     // https://stackoverflow.com/questions/25514812/how-to-animate-color-of-qbrush
-    QColor Button::mixColors(const QColor &cstart, const QColor &cend, qreal progress) const
-    {
+    QColor Button::mixColors(const QColor &cstart, const QColor &cend, qreal progress) const {
         int sh = cstart.hsvHue();
         int eh = cend.hsvHue();
         int ss = cstart.hsvSaturation();
@@ -562,8 +519,7 @@ namespace Breeze
                                 sv + dirv * progress * vr );
     }
 
-    QColor Button::fontColor() const
-    {
+    QColor Button::fontColor() const {
         auto d = qobject_cast<Decoration*>( decoration() );
 
         if( !d ) {
@@ -578,8 +534,7 @@ namespace Breeze
 
     }
 
-    QColor Button::foregroundColor() const
-    {
+    QColor Button::foregroundColor() const {
         auto d = qobject_cast<Decoration*>( decoration() );
         QColor titleBarColor ( d->titleBarColor() );
 
@@ -595,10 +550,6 @@ namespace Breeze
 
             return titleBarColor;
 
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
-
-            return KColorUtils::mix( d->fontColor(), titleBarColor, m_opacity );
-
         } else if( this->hovered() ) {
 
             return titleBarColor;
@@ -611,9 +562,7 @@ namespace Breeze
 
     }
 
-        //__________________________________________________________________
-    QColor Button::backgroundColor() const
-    {
+    QColor Button::backgroundColor() const {
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) {
 
@@ -631,22 +580,6 @@ namespace Breeze
 
             return d->fontColor();
 
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
-
-            if( type() == DecorationButtonType::Close )
-            {
-                QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
-                color.setAlpha( color.alpha()*m_opacity );
-                return color;
-
-            } else {
-
-                QColor color( d->fontColor() );
-                color.setAlpha( color.alpha()*m_opacity );
-                return color;
-
-            }
-
         } else if( this->hovered() ) {
 
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
@@ -661,8 +594,7 @@ namespace Breeze
     }
 
 
-    QColor Button::autoColor( const bool inactiveWindow, const bool useActiveButtonStyle, const bool useInactiveButtonStyle, const QColor darkSymbolColor, const QColor lightSymbolColor ) const
-    {
+    QColor Button::autoColor( const bool inactiveWindow, const bool useActiveButtonStyle, const bool useInactiveButtonStyle, const QColor darkSymbolColor, const QColor lightSymbolColor ) const {
         QColor col;
 
         if ( useActiveButtonStyle || ( !inactiveWindow && !useInactiveButtonStyle ) )
@@ -688,19 +620,9 @@ namespace Breeze
         return col;
     }
 
-    bool Button::hovered() const
-    {
+    bool Button::hovered() const {
       auto d = qobject_cast<Decoration*>( decoration() );
       return isHovered() || ( d->buttonHovered() && d->internalSettings()->unisonHovering() );
-    }
-
-    void Button::reconfigure()
-    {
-
-        // animation
-        // auto d = qobject_cast<Decoration*>(decoration());
-        // if( d )  m_animation->setDuration( d->internalSettings()->animationsDuration() );
-
     }
 
 } // namespace
